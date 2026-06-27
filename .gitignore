@@ -1,0 +1,14 @@
+# APIキーなどの秘密情報（絶対にコミットしない）
+.env
+.env.local
+*.key
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 出力物・一時ファイル
+output/
+*.log

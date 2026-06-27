@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoSentinel · 軍事・地政学インテリジェンス</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Three.js + OrbitControls を ES モジュールとして読み込む -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+      "earcut": "https://esm.sh/earcut@2.2.4"
+    }
+  }
+  </script>
+</head>
+<body>
+  <!-- 地球儀キャンバス（フルウィンドウの基盤レイヤー） -->
+  <canvas id="globe"></canvas>
+  <div id="globe-loading" class="globe-loading">INITIALIZING GLOBE…</div>
+
+  <!-- HUD 装飾 -->
+  <div class="hud-corner tl"></div>
+  <div class="hud-corner tr"></div>
+  <div class="hud-corner bl"></div>
+  <div class="hud-corner br"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">◈</span>
+      <span class="brand-name">GEOSENTINEL</span>
+      <span class="brand-sub">// MILITARY &amp; GEOPOLITICAL INTELLIGENCE</span>
+    </div>
+    <div class="status">
+      <span class="dot"></span> LIVE FEED
+      <span class="sep">|</span>
+      <span id="clock">--:--:-- JST</span>
+    </div>
+  </header>
+
+  <!-- 国名検索バー（地球儀の上） -->
+  <div class="search-wrap">
+    <input id="country-search" type="text" autocomplete="off"
+           placeholder="🔍 国名で検索（例: 日本 / Japan）" aria-label="国名検索" />
+    <div id="search-suggestions" class="search-suggestions" hidden></div>
+  </div>
+
+  <!-- 右側：ニュースパネル -->
+  <aside class="panel" id="news-panel">
+    <div class="panel-head">
+      <h2 id="panel-title">REGIONAL FEED</h2>
+      <div class="panel-head-right">
+        <span class="panel-tag" id="panel-region">—</span>
+        <button class="panel-close" id="panel-close" aria-label="閉じる">×</button>
+      </div>
+    </div>
+    <div class="panel-body" id="panel-body">
+      <p class="panel-hint">地球儀上の国にカーソルを合わせるとハイライトされます。国をクリック、または下部の地域タブを選ぶと、ここにニュースが表示されます。</p>
+    </div>
+  </aside>
+
+  <!-- 地球儀の下：19分類の地域タブ -->
+  <div class="bottom-dock">
+  <nav class="region-tabs" id="region-tabs" aria-label="19地域">
+    <button class="region-tab region-tab-jp" data-region="Japan">日本</button>
+    <button class="region-tab" data-region="East Asia">東アジア</button>
+    <button class="region-tab" data-region="Southeast Asia">東南アジア</button>
+    <button class="region-tab" data-region="South Asia">南アジア</button>
+    <button class="region-tab" data-region="Central Asia">中央アジア</button>
+    <button class="region-tab" data-region="Oceania">オセアニア</button>
+    <button class="region-tab" data-region="Gulf">湾岸地域</button>
+    <button class="region-tab" data-region="Iran">イラン</button>
+    <button class="region-tab" data-region="North Africa">北アフリカ</button>
+    <button class="region-tab" data-region="Sub-Saharan Africa">サハラ以南アフリカ</button>
+    <button class="region-tab" data-region="Northern Europe">北ヨーロッパ</button>
+    <button class="region-tab" data-region="Western Europe">西ヨーロッパ</button>
+    <button class="region-tab" data-region="Eastern Europe">東ヨーロッパ</button>
+    <button class="region-tab" data-region="Ukraine">ウクライナ</button>
+    <button class="region-tab" data-region="Russia">ロシア</button>
+    <button class="region-tab" data-region="Balkans">バルカン半島</button>
+    <button class="region-tab" data-region="North America">北アメリカ</button>
+    <button class="region-tab" data-region="Central America">中央アメリカ</button>
+    <button class="region-tab" data-region="South America">南アメリカ</button>
+  </nav>
+  <section class="summary-panel" id="summary-panel" hidden>
+    <div class="summary-head">
+      <span class="summary-title" id="summary-region">地域要約</span>
+      <button class="summary-close" id="summary-close" aria-label="閉じる">×</button>
+    </div>
+    <div class="summary-body" id="summary-body"></div>
+  </section>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-info">DATA: GOOGLE NEWS RSS + GDELT 2.0 · 19-REGION CLASSIFIER</div>
+  </footer>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

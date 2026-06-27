@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" id="world-map" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#06121a"/>
+      <stop offset="100%" stop-color="#02060a"/>
+    </radialGradient>
+    <filter id="nodeGlow" x="-200%" y="-200%" width="500%" height="500%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景 -->
+  <rect x="0" y="0" width="1000" height="500" fill="url(#bgGlow)"/>
+
+  <!-- 経緯線グリッド（戦術的な雰囲気） -->
+  <g stroke="#0e2b38" stroke-width="0.6" opacity="0.55">
+    <line x1="83" y1="0" x2="83" y2="500"/><line x1="167" y1="0" x2="167" y2="500"/>
+    <line x1="250" y1="0" x2="250" y2="500"/><line x1="333" y1="0" x2="333" y2="500"/>
+    <line x1="417" y1="0" x2="417" y2="500"/><line x1="500" y1="0" x2="500" y2="500"/>
+    <line x1="583" y1="0" x2="583" y2="500"/><line x1="667" y1="0" x2="667" y2="500"/>
+    <line x1="750" y1="0" x2="750" y2="500"/><line x1="833" y1="0" x2="833" y2="500"/>
+    <line x1="917" y1="0" x2="917" y2="500"/>
+    <line x1="0" y1="83" x2="1000" y2="83"/><line x1="0" y1="167" x2="1000" y2="167"/>
+    <line x1="0" y1="250" x2="1000" y2="250"/><line x1="0" y1="333" x2="1000" y2="333"/>
+    <line x1="0" y1="417" x2="1000" y2="417"/>
+  </g>
+
+  <!-- 大陸シルエット（簡易・抽象的） -->
+  <g class="landmass" fill="#0c1c26" stroke="#16414f" stroke-width="1">
+    <path d="M120,70 L260,70 L284,150 L232,212 L180,202 L150,150 L110,120 Z"/>
+    <path d="M232,212 L300,205 L322,250 L290,300 L250,260 Z"/>
+    <path d="M320,250 L384,240 L404,300 L360,362 L335,330 L330,282 Z"/>
+    <path d="M470,80 L588,86 L582,150 L520,162 L480,140 Z"/>
+    <path d="M495,165 L612,160 L622,250 L560,336 L520,300 L505,230 Z"/>
+    <path d="M590,86 L908,96 L900,210 L780,226 L660,200 L600,150 Z"/>
+    <path d="M815,296 L912,290 L916,346 L840,352 Z"/>
+  </g>
+
+  <!-- インタラクティブな国ノード（hover/クリック対象） -->
+  <g id="countries">
+    <g class="country" data-code="US" data-name="United States" data-region="North America" transform="translate(228,142)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">US</text></g>
+    <g class="country" data-code="CA" data-name="Canada" data-region="North America" transform="translate(206,94)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">CA</text></g>
+    <g class="country" data-code="MX" data-name="Mexico" data-region="Central America" transform="translate(217,186)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">MX</text></g>
+    <g class="country" data-code="BR" data-name="Brazil" data-region="South America" transform="translate(358,278)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">BR</text></g>
+    <g class="country" data-code="UK" data-name="United Kingdom" data-region="Western Europe" transform="translate(497,106)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">UK</text></g>
+    <g class="country" data-code="FR" data-name="France" data-region="Western Europe" transform="translate(506,122)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">FR</text></g>
+    <g class="country" data-code="DE" data-name="Germany" data-region="Western Europe" transform="translate(528,108)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">DE</text></g>
+    <g class="country" data-code="NO" data-name="Norway" data-region="Northern Europe" transform="translate(522,81)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">NO</text></g>
+    <g class="country" data-code="PL" data-name="Poland" data-region="Eastern Europe" transform="translate(553,106)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">PL</text></g>
+    <g class="country" data-code="UA" data-name="Ukraine" data-region="Ukraine" transform="translate(586,114)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">UA</text></g>
+    <g class="country" data-code="RU" data-name="Russia" data-region="Russia" transform="translate(750,78)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">RU</text></g>
+    <g class="country" data-code="RS" data-name="Serbia" data-region="Balkans" transform="translate(558,128)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">RS</text></g>
+    <g class="country" data-code="EG" data-name="Egypt" data-region="North Africa" transform="translate(583,175)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">EG</text></g>
+    <g class="country" data-code="NG" data-name="Nigeria" data-region="Sub-Saharan Africa" transform="translate(522,225)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">NG</text></g>
+    <g class="country" data-code="SA" data-name="Saudi Arabia" data-region="Gulf" transform="translate(625,183)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">SA</text></g>
+    <g class="country" data-code="IL" data-name="Israel" data-region="Levant" transform="translate(597,164)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">IL</text></g>
+    <g class="country" data-code="IR" data-name="Iran" data-region="Iran" transform="translate(647,161)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">IR</text></g>
+    <g class="country" data-code="KZ" data-name="Kazakhstan" data-region="Central Asia" transform="translate(686,117)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">KZ</text></g>
+    <g class="country" data-code="IN" data-name="India" data-region="South Asia" transform="translate(717,189)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">IN</text></g>
+    <g class="country" data-code="CN" data-name="China" data-region="East Asia" transform="translate(789,153)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">CN</text></g>
+    <g class="country" data-code="KR" data-name="South Korea" data-region="East Asia" transform="translate(853,147)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">KR</text></g>
+    <g class="country" data-code="JP" data-name="Japan" data-region="East Asia" transform="translate(883,150)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">JP</text></g>
+    <g class="country" data-code="VN" data-name="Vietnam" data-region="Southeast Asia" transform="translate(794,206)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">VN</text></g>
+    <g class="country" data-code="AU" data-name="Australia" data-region="Oceania" transform="translate(872,319)"><circle class="ring" r="11"/><circle class="node" r="4"/><text class="label" x="9" y="4">AU</text></g>
+  </g>
+</svg>
