@@ -169,6 +169,47 @@ body::before {
 .search-item:hover, .search-item.active { background: rgba(0, 229, 255, 0.12); color: #eafdff; }
 .search-item .si-code { color: var(--muted); font-size: 11px; }
 
+/* 左側：ニュース分類フィルター（縦並び・複数選択可・トグル解除） */
+.category-tabs {
+  position: fixed;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+.category-tab {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--cat-color, var(--muted));
+  background: rgba(7, 20, 29, 0.85);
+  border: 1px solid var(--cat-color, var(--line));
+  border-radius: 4px;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.category-tab:hover { background: rgba(255,255,255,0.08); }
+.category-tab.active {
+  color: var(--bg);
+  background: var(--cat-color);
+  box-shadow: 0 0 12px var(--cat-color);
+}
+
+/* ニュース項目のカテゴリー色タグ（分類色とタブ色を一致させる） */
+.ni-cat {
+  display: inline-block;
+  font-size: 10px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  margin-bottom: 6px;
+  color: var(--bg);
+  background: var(--cat-color, var(--muted));
+}
+
 /* 日本タブ（先頭・アクセント） */
 .region-tab-jp { border-color: var(--accent-2); color: var(--accent-2); }
 .region-tab-jp:hover { color: #eafdff; }
@@ -190,6 +231,65 @@ body::before {
   background: rgba(0,229,255,0.05);
 }
 
+/* 期間フィルター（3日/1週間/1か月/3か月/6か月/1年） */
+.range-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  flex: 0 0 auto;
+}
+.range-tabs[hidden] { display: none; }
+.range-tab {
+  flex: 0 0 auto;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 4px 9px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.range-tab:hover { color: #eafdff; border-color: var(--accent); }
+.range-tab.active {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ページネーション（期間内の記事が21件以上のとき表示） */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--line);
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+}
+.pagination[hidden] { display: none; }
+.page-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 3px 9px;
+  cursor: pointer;
+}
+.page-btn:hover:not(:disabled) { color: #eafdff; border-color: var(--accent); }
+.page-btn.active { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+.page-btn:disabled { opacity: 0.35; cursor: default; }
+
+/* 分類フィルターの「読み込み中」表示 */
+.panel-loading { color: var(--accent); font-size: 12px; }
+
 /* 地域要約ブロック（Claude） */
 .region-summary {
   font-size: 12.5px;
@@ -205,6 +305,7 @@ body::before {
 /* ニュース項目（リンク付き） */
 .news-item {
   border: 1px solid var(--line);
+  border-left: 3px solid var(--cat-color, var(--line));
   border-radius: 4px;
   padding: 10px 12px;
   margin-bottom: 10px;
@@ -324,7 +425,37 @@ body::before {
 .btn:hover { background: var(--accent); color: var(--bg); box-shadow: 0 0 16px rgba(0,229,255,0.5); }
 
 @media (max-width: 860px) {
-  .panel { display: none; }
-  .bottom-dock { right: 16px; }
   .brand-sub { display: none; }
+
+  /* 検索バー：タイトルと被らないよう、トップバーの下・地球儀の上に配置 */
+  .search-wrap {
+    top: 60px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+
+  /* ニュースパネル：右オーバーレイではなく、検索バー下から画面ほぼ全体を覆う形で表示 */
+  .panel {
+    top: 108px;
+    left: 12px;
+    right: 12px;
+    bottom: 54px;
+    width: auto;
+    z-index: 20;
+  }
+
+  .bottom-dock { left: 12px; right: 12px; }
+
+  /* 分類フィルター：下部ドック（地域タブ・地域要約）と重ならないよう、
+     縦中央寄せをやめて検索バーの下に上詰めで配置し、幅も詰める */
+  .category-tabs {
+    top: 116px;
+    left: 6px;
+    transform: none;
+    gap: 6px;
+  }
+  .category-tab { font-size: 10px; padding: 6px 8px; }
 }

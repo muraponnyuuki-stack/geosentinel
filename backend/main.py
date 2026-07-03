@@ -171,7 +171,11 @@ _MIL_EN = "military OR defense OR security OR conflict"
 _GNEWS = "https://news.google.com/rss/search?q={q}&hl={hl}&gl={gl}&ceid={ceid}"
 _CACHE: dict[str, tuple[float, list[dict]]] = {}
 _CACHE_TTL = 600   # 同一クエリのキャッシュ保持秒数
-_MAX_ITEMS = 10
+_MAX_ITEMS = 100   # Google News RSS が実際に返す上限に合わせて多めに取得
+
+# 期間フィルターの選択肢（フロントの期間タブと対応）と、1ページあたりの件数
+RANGE_DAYS = {"3d": 3, "1w": 7, "1m": 30, "3m": 90, "6m": 180, "1y": 365}
+_PAGE_SIZE = 20
 
 
 def _fetch_feed(query: str, hl: str, gl: str, ceid: str) -> list[dict]:
@@ -242,6 +246,8 @@ def fetch_real_news(country: str | None, region: str | None) -> list[dict]:
     for a in articles:
         a["region"] = resolved_region
         a["country"] = (country or "").upper() or None
+    # 新しい記事が上に来るよう、公開日時の降順に並べ替える（未取得分は末尾）
+    articles.sort(key=lambda a: a["published"] or "", reverse=True)
     _CACHE[cache_key] = (now, articles)
     return articles
 
@@ -290,19 +296,50 @@ def health() -> dict:
 def news(
     country: str | None = Query(default=None, description="国コード 例: JP"),
     region: str | None = Query(default=None, description="地域 例: East Asia"),
+    range: str = Query(default="1w", description="3d/1w/1m/3m/6m/1y"),
+    page: int = Query(default=1, ge=1, description="1年など件数が多い期間向けのページ番号"),
 ) -> JSONResponse:
-    """国コード or 地域で実ニュース（Google News RSS）を返す。失敗時はダミーで代替。"""
+    """国コード or 地域で実ニュース（Google News RSS）を返す。失敗時はダミーで代替。
+
+    range で公開日時を絞り込み、page で 20 件ずつページングする。
+    """
     articles = fetch_real_news(country, region)
     fallback = False
     if not articles:
         articles = _dummy_articles(country, region)
         fallback = True
+
+    days = RANGE_DAYS.get(range, RANGE_DAYS["1w"])
+    cutoff = dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=days)
+
+    def _in_range(a: dict) -> bool:
+        raw = a.get("published")
+        if not raw:
+            return True  # 公開日時不明の記事は除外しない
+        try:
+            pub = dt.datetime.fromisoformat(raw)
+        except ValueError:
+            return True
+        return pub >= cutoff
+
+    filtered = [a for a in articles if _in_range(a)]
+    total = len(filtered)
+    total_pages = max(1, (total + _PAGE_SIZE - 1) // _PAGE_SIZE)
+    page = min(page, total_pages)
+    start = (page - 1) * _PAGE_SIZE
+    page_articles = filtered[start:start + _PAGE_SIZE]
+
     return JSONResponse(
         {
             "query": {"country": country, "region": region},
-            "count": len(articles),
+            "range": range,
+            "page": page,
+            "page_size": _PAGE_SIZE,
+            "total": total,
+            "total_pages": total_pages,
+            "count": len(page_articles),
             "fallback": fallback,
-            "articles": articles,
+            "articles": page_articles,
         }
     )
 
@@ -347,7 +384,6 @@ class ClassifyIn(BaseModel):
 
 
 class ClassifyOut(BaseModel):
-    is_military: bool
     category: str
     reason: str
 
@@ -401,6 +437,15 @@ def summarize_endpoint(payload: SummarizeIn) -> dict:
         raise _handle_claude_errors(exc)
 
 
+class NoCacheStaticFiles(StaticFiles):
+    """更新後すぐ反映されるよう、ブラウザに常時再検証させる（ETag/Last-Modifiedでの304は維持）。"""
+
+    def file_response(self, *args, **kwargs) -> Response:
+        resp = super().file_response(*args, **kwargs)
+        resp.headers["Cache-Control"] = "no-cache"
+        return resp
+
+
 # --- フロントエンド配信（API ルートの後にマウントする） ---
 if FRONTEND_DIR.is_dir():
-    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
+    app.mount("/", NoCacheStaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")

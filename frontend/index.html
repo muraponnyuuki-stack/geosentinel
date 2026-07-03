@@ -48,6 +48,15 @@
     <div id="search-suggestions" class="search-suggestions" hidden></div>
   </div>
 
+  <!-- 左側：ニュース分類フィルター（複数選択可・同じタブを再クリックで解除） -->
+  <nav class="category-tabs" id="category-tabs" aria-label="ニュース分類フィルター">
+    <button class="category-tab" data-category="conflict" style="--cat-color:#ff9f40">紛争</button>
+    <button class="category-tab" data-category="war" style="--cat-color:#ff4d4d">戦争</button>
+    <button class="category-tab" data-category="diplomacy" style="--cat-color:#4fc3ff">外交</button>
+    <button class="category-tab" data-category="policy" style="--cat-color:#b388ff">政策</button>
+    <button class="category-tab" data-category="military_exercise" style="--cat-color:#39ff88">軍事演習</button>
+  </nav>
+
   <!-- 右側：ニュースパネル -->
   <aside class="panel" id="news-panel">
     <div class="panel-head">
@@ -57,9 +66,19 @@
         <button class="panel-close" id="panel-close" aria-label="閉じる">×</button>
       </div>
     </div>
+    <!-- 期間フィルター（国・地域選択後に表示） -->
+    <div class="range-tabs" id="range-tabs" hidden>
+      <button class="range-tab" data-range="3d">3日</button>
+      <button class="range-tab active" data-range="1w">1週間</button>
+      <button class="range-tab" data-range="1m">1か月</button>
+      <button class="range-tab" data-range="3m">3か月</button>
+      <button class="range-tab" data-range="6m">6か月</button>
+      <button class="range-tab" data-range="1y">1年</button>
+    </div>
     <div class="panel-body" id="panel-body">
       <p class="panel-hint">地球儀上の国にカーソルを合わせるとハイライトされます。国をクリック、または下部の地域タブを選ぶと、ここにニュースが表示されます。</p>
     </div>
+    <div class="pagination" id="panel-pagination" hidden></div>
   </aside>
 
   <!-- 地球儀の下：19分類の地域タブ -->
